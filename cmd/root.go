@@ -15,7 +15,7 @@ var rootCmd = &cobra.Command{
 	Use:   "dragoman",
 	Short: "An encryption toolset",
 	Long: `Dragoman is an encryption toolset that helps you encrypt
-and decrypt your secrets. A common use case is when your secretes need
+and decrypt your secrets. A common use case is when your secrets need
 to live alongside your code.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
