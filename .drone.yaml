@@ -1,0 +1,18 @@
+kind: pipeline
+name: Pull-Request
+
+trigger:
+  branch:
+    - main
+  event:
+    - pull_request
+    - push
+
+steps:
+  - name: Go Test
+    image: public.ecr.aws/docker/library/golang:1.17
+    commands:
+      - go test ./...
+    when:
+      event:
+        - pull_request
