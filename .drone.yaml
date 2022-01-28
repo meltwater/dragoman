@@ -1,3 +1,10 @@
+aws_environment: &aws_environment
+  AWS_ACCESS_KEY_ID:
+    from_secret: AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY:
+    from_secret: AWS_SECRET_ACCESS_KEY
+  AWS_DEFAULT_REGION: eu-west-1
+
 kind: pipeline
 name: Pull-Request
 
@@ -5,11 +12,11 @@ trigger:
   branch:
     - main
   event:
-    - pull_request
-    - push
+    exclude:
+      - tag
 
 steps:
-  - name: Go Test
+  - name: unit-test
     image: public.ecr.aws/docker/library/golang:1.17
     commands:
       - go test ./...
