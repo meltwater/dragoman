@@ -25,8 +25,10 @@ steps:
         from_secret: GITHUB_TOKEN
     commands:
       - go install github.com/caarlos0/svu@v1.9.0 # Install SVU to generate the semantic version
-      - git fetch --tags
-      - git tag "$(svu next --tag-mode all-branches)"
+      - git fetch --tags # make sure we have an updated list of tags
+      - echo "Found tag" $(svu current)
+      - echo "Tagging with" $(svu next)
+      - git tag "$(svu next)" # make the new tag
       - git push --tags
     when:
       event:
