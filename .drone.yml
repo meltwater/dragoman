@@ -18,7 +18,7 @@ steps:
       event:
         - pull_request
 
-  - name: create-tag
+  - name: tag-and-release
     image: public.ecr.aws/docker/library/golang:1.17
     environment:
       GITHUB_TOKEN:
@@ -30,20 +30,10 @@ steps:
       - echo "Tagging with" $(svu next)
       - git tag "$(svu next)" # make the new tag
       - git push --tags
-    when:
-      event:
-        - push
 
-  - name: create-release
-    image: public.ecr.aws/docker/library/golang:1.17
-    environment:
-      GITHUB_TOKEN:
-        from_secret: GITHUB_TOKEN
-    commands:
+      # Release it
       - go install github.com/goreleaser/goreleaser@v1.4.1 # Use goreleaser to create the release
       - goreleaser --rm-dist
     when:
       event:
         - push
-    depends_on:
-      - create-tag
