@@ -1,0 +1,46 @@
+kind: pipeline
+type: docker
+name: Pull-Request
+
+trigger:
+  branch:
+    - main
+  event:
+    exclude:
+      - tag
+
+steps:
+  - name: unit-test
+    image: public.ecr.aws/docker/library/golang:1.17
+    commands:
+      - go test ./...
+    when:
+      event:
+        - pull_request
+
+  - name: create-tag
+    image: public.ecr.aws/docker/library/golang:1.17
+    environment:
+      GITHUB_TOKEN:
+        from_secret: GITHUB_TOKEN
+    commands:
+      - go install github.com/caarlos0/svu@v1.9.0 # Install SVU to generate the semantic version
+      - git tag "$(svu next)"
+      - git push --tags
+    when:
+      event:
+        - push
+
+  - name: create-release
+    image: public.ecr.aws/docker/library/golang:1.17
+    environment:
+      GITHUB_TOKEN:
+        from_secret: GITHUB_TOKEN
+    commands:
+      - go install github.com/goreleaser/goreleaser@v1.4.1 # Use goreleaser to create the release
+      - goreleaser --rm-dist
+    when:
+      event:
+        - push
+    depends_on:
+      - create-tag
