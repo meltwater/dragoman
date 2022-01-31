@@ -16,6 +16,8 @@ builds:
     goarch:
       - amd64
       - arm64
+  - ldflags:
+    - -X github.com/meltwater/dragoman/cmd.VersionNumber=`svu current`
 archives:
   - replacements:
       darwin: Darwin
