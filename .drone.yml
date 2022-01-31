@@ -24,16 +24,7 @@ steps:
       GITHUB_TOKEN:
         from_secret: GITHUB_TOKEN
     commands:
-      - go install github.com/caarlos0/svu@v1.9.0 # Install SVU to generate the semantic version
-      - git fetch --tags # make sure we have an updated list of tags
-      - echo "Found tag" $(svu current)
-      - echo "Tagging with" $(svu next)
-      - git tag "$(svu next)" # make the new tag
-      - git push --tags
-
-      # Release it
-      - go install github.com/goreleaser/goreleaser@v1.4.1 # Use goreleaser to create the release
-      - goreleaser --rm-dist
+      - ./scripts/ci/deploy.sh
     when:
       event:
         - push
