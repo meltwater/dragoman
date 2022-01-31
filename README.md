@@ -13,7 +13,7 @@ There are a few ways to install the executable:
 - The executable can be downloaded from the [releases page](https://github.com/meltwater/dragoman/releases/latest) for various architectures
 - Extract the executable and place it somewhere in your `$PATH`
 
-# KMS Encrpytion and Decryption
+# KMS Encryption and Decryption
 Envelope encryption can be done using KMS to encrypt your strings locally. When encrypting secrets, you will be returned a string in the format `ENC[KMS,{{YOUR_ENCRYPTED_SECRET}}]`. It's important to leave the ENC and KMS wrapping to allow for proper decryption later.
 
 You will either need your AWS Credentials in ~/.aws/credentials or all of the following environment variables set:
@@ -48,16 +48,6 @@ $ dragoman decrypt -f my_encrypted.file > my_decrypted.file
 - Decrypt reads the string provided to std:in or optionally a file via the `--input` argument
 - Decrypt will output the decrypted string to std:out which can then be forwarded to a file if desired
 - Decrypt will search the provided text for any encryptions and do a replace-in-place for each encryption it finds
-
-## Configuration
-
-The KMS Encryption and Decryption crypto strategies require some environment variables to be set in order to properly configure the AWS SDK. 
-
-### AWS Region
-You have 3 options for how to configure what region to use. 
-1. Specify the region when calling the api using the `--aws-region` flag
-2. Set the `AWS_REGION` environment variable (*preferred method*)
-3. Set the `AWS_DEFAULT_REGION` environment variable
 
 # Contributing
 ## Submitting PRs
