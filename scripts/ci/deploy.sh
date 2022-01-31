@@ -9,7 +9,7 @@ git fetch --tags
 CURRENT=$(svu current)
 NEXT=$(svu next)
 
-if [CURRENT != NEXT]
+if [ $CURRENT != $NEXT ]
 then
   echo "Tagging with" $NEXT
   git tag $NEXT
