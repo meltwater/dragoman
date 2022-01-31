@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install svu for version comparison
-go install github.com/caarlos0/svu@1.9.0
+go install github.com/caarlos0/svu@v1.9.0
 
 # Fetch the latest tags
 git fetch --tags
