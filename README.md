@@ -50,19 +50,20 @@ $ dragoman decrypt -f my_encrypted.file > my_decrypted.file
 - Decrypt will search the provided text for any encryptions and do a replace-in-place for each encryption it finds
 
 # Contributing
-## Submitting PRs
-We will gladly take a look at PRs for improvements to this codebase. Add your changes to a branch, create a PR to `main` and once all checks successfully complete, ping Carlitos in [#carlitos-el-paraiso](https://meltwater.slack.com/archives/CB1EZMNJZ)
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) to understand how to submit pull requests to us, and also see our [code of conduct](CODE_OF_CONDUCT.md).
+
+All ideas for new features and bug reports will be kept in [github.com/meltwater/dragoman/issues](https://github.com/meltwater/dragoman/issues).
+
 ## Enabling git hooks
 We suggest enabling git hooks so that linting and unit test automatically get run when committing and pushing changes.
 
 To enable git hooks run `$ git config core.hooksPath .githooks` in the project root
 
-## Builds
-Builds can be done by running `go build` in the project root
+## Authors and Acknowledgement
+See the list of [all contributors](https://github.com/meltwater/dragoman/graphs/contributors).
 
-## Testing
-The unit tests can be run by running `go test ./{package_name}` in a specific package or for all packages by running `go test ./...` in the project root.
-# Support, Questions and Feedback
-The lead maintainer for this project is Team Carlito's Way.
+## Inspiration
+The idea stemmed from a subset of functionality of the [Secretary](https://github.com/meltwater/secretary) tool that is now deprecated. Internal teams still use this subset of functionality to handle secrets origination problems and as a result, we decided to resurrect that functionality in this tool.
 
-[Email (all.carlitosway@meltwater.com)](mailto:all.carlitosway@meltwater.com) | [Slack (#carlitos-el-paraiso)](https://meltwater.slack.com/archives/CB1EZMNJZ)
+# License and Copyright
+This project is licensed under the [MIT License](LICENSE).
