@@ -13,6 +13,7 @@ if [ $CURRENT != $NEXT ]
 then
   echo "Tagging with" $NEXT
   git tag $NEXT
+  git tag latest
   git push --tags
 
   # Do the release
