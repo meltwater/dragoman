@@ -18,7 +18,7 @@ then
 
   # Do the release
   go install github.com/goreleaser/goreleaser@v1.4.1
-  goreleaser --rm-dist
+  VERSION=$NEXT goreleaser --rm-dist
 else
   echo "No new version detected. Skipping release."
 fi
