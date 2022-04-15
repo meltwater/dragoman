@@ -45,13 +45,13 @@ func NewSecretsManagerCryptoStrategy(region string) (*SecretsManagerCryptoStrate
 }
 
 // Encrypt will generate the wrapped encoded string
-// @param: payload is used for key/value pair keys
-// @param: key is expected to be the key of the secret that will be used for decryption
-// @returns: The base64 encoded arn with the encryption strategy key
+// 	@param: payload is expected to be the key of the secret that will be used for decryption
+// 	@param: key is used for key/value pair keys
+// 	@returns: The base64 encoded arn with the encryption strategy key
 func (cs SecretsManagerCryptoStrategy) Encrypt(payload []byte, key string) (string, error) {
 	envelopePayload := &smEnvelopeEncryptionPayload{
-		SecretID:  []byte(key),
-		SecretKey: payload,
+		SecretID:  payload,
+		SecretKey: []byte(key),
 	}
 
 	buff := &bytes.Buffer{}

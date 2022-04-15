@@ -19,13 +19,7 @@ func processSMEncrypt(cfg *encryptConfig) error {
 	}
 
 	var envelope string
-
-	var secretKey []byte = nil
-	if cfg.SecretKey != "" {
-		secretKey = []byte(cfg.SecretKey)
-	}
-
-	if envelope, err = strategy.Encrypt(secretKey, cfg.Key); err != nil {
+	if envelope, err = strategy.Encrypt([]byte(cfg.Key), cfg.SecretKey); err != nil {
 		return fmt.Errorf("error encountered attempting secrets manager encryption: %v", err)
 	}
 

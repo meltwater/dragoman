@@ -2,7 +2,6 @@ package cryptography
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	sm "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
@@ -56,7 +55,7 @@ func TestSmEncrypt(t *testing.T) {
 
 		keyId := "aKey"
 
-		encryptedKey, err := strategy.Encrypt(nil, keyId)
+		encryptedKey, err := strategy.Encrypt([]byte(keyId), "")
 
 		assert.Nil(t, err)
 		assert.NotNil(t, encryptedKey)
@@ -69,7 +68,7 @@ func TestSmEncrypt(t *testing.T) {
 		keyId := "aKey"
 		secretKey := "thekeyformyvalue"
 
-		encryptedKey, err := strategy.Encrypt([]byte(secretKey), keyId)
+		encryptedKey, err := strategy.Encrypt([]byte(keyId), secretKey)
 
 		assert.Nil(t, err)
 		assert.NotNil(t, encryptedKey)
@@ -81,9 +80,7 @@ func TestSmDecrypt(t *testing.T) {
 	t.Run("it should output the string returned by secrets manager", func(t *testing.T) {
 		superSecret := "Jon Snow gets resurrected"
 		var encrypted string
-		generateMockSmEncryptedString("", "aKey", &encrypted)
-
-		fmt.Println(encrypted)
+		generateMockSmEncryptedString("aKey", "", &encrypted)
 
 		strategy, mockSm := getMockSecretsManagerStrategy()
 
@@ -101,9 +98,7 @@ func TestSmDecrypt(t *testing.T) {
 	t.Run("it should output the value in the JSON returned by SM for the key provided", func(t *testing.T) {
 		superSecret := "{\"myKey\":\"Jon Snow gets resurrected\"}"
 		var encrypted string
-		generateMockSmEncryptedString("myKey", "aKey", &encrypted)
-
-		fmt.Println(encrypted)
+		generateMockSmEncryptedString("aKey", "myKey", &encrypted)
 
 		strategy, mockSm := getMockSecretsManagerStrategy()
 
