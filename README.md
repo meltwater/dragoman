@@ -49,6 +49,39 @@ $ dragoman decrypt -f my_encrypted.file > my_decrypted.file
 - Decrypt will output the decrypted string to std:out which can then be forwarded to a file if desired
 - Decrypt will search the provided text for any encryptions and do a replace-in-place for each encryption it finds
 
+# Secrets Manager Encryption
+For referencing secrets stored in AWS Secrets Manager
+
+You will either need your AWS Credentials in ~/.aws/credentials or all of the following environment variables set:
+- `$AWS_ACCESS_KEY`
+- `$AWS_SECRET_ACCESS_KEY`
+- `$AWS_REGION`
+
+Details on how to configure your AWS credentials [can be found here]("github.com/aws/aws-sdk-go-v2/config")
+## Encryption
+| Param | Description |
+| ----- | ----------- |
+| `--sm-key-id` | The ARN or name of the secret |
+| `--sm-secret-key` | The key in the secret JSON for JSON based secrets |
+
+Secret String Example:
+```bash
+dragoman encrypt --sm-key-id my-super-secret
+```
+
+Secret JSON String Example
+```bash
+# Example Secret
+# {
+#   "MY_KEY": "MY_VALUE"
+# }
+
+dragoman encrypt --sm-key-id my-super-secrets --sm-secret-key MY_KEY
+```
+## Decryption
+```bash
+echo ENC[SECMAN,...] | dragoman decrypt
+```
 # Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) to understand how to submit pull requests to us, and also see our [code of conduct](CODE_OF_CONDUCT.md).
 
