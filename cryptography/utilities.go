@@ -10,6 +10,7 @@ import (
 var (
 	validStrategies = []string{
 		"KMS",
+		"SECMAN",
 	}
 	regexstr      = fmt.Sprintf("ENC\\[(%s),[a-zA-Z0-9+/=\\s]+\\]", strings.Join(validStrategies, "|"))
 	EnvelopeRegex = regexp.MustCompile(regexstr)

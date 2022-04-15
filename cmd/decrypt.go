@@ -43,7 +43,9 @@ The decryption strategy will be automatically detected`,
 		// Be able to handle different encryption types
 		strategy := cryptography.NewWildcardDecryptionStrategy()
 		kmsStrategy, _ := cryptography.NewKmsCryptoStrategy("")
+		smStrategy, _ := cryptography.NewSecretsManagerCryptoStrategy("")
 		strategy.Add("KMS", kmsStrategy)
+		strategy.Add("SECMAN", smStrategy)
 
 		if err := processDecrypt(input, output, strategy); err != nil {
 			panic(fmt.Errorf("unable to decrypt the provided text: %v", err))

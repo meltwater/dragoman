@@ -5,12 +5,9 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
-	"github.com/meltwater/dragoman/cryptography"
 	"github.com/spf13/cobra"
 )
 
@@ -22,16 +19,15 @@ var encryptCmd = &cobra.Command{
 
 Examples: 
 
-Encrypt with KMS
-"My string to encrypt" | dragoman encrypt --kms-key-id myKmsKey`,
-	Run: func(cmd *cobra.Command, args []string) {
-		var err error
+Encrypt with AWS KMS
+"My string to encrypt" | dragoman encrypt --kms-key-id myKmsKey
 
-		// Is this a kms encryption?
+Encrypt with AWS Secrets Manager
+dragoman encrypt --sm-key-id mySecretsManagerKey --sm-secret-key myValuesKey`,
+	Run: func(cmd *cobra.Command, args []string) {
+		// KMS Envelope Encrpytion
 		var kmsKey string
-		if kmsKey, err = cmd.Flags().GetString("kms-key-id"); err != nil {
-			panic("No KMS Key provided for command encrypt. Please specify --kms-key-id")
-		} else if kmsKey != "" {
+		if kmsKey, _ = cmd.Flags().GetString("kms-key-id"); kmsKey != "" {
 			var (
 				awsRegion string
 				wrapLines bool
@@ -47,12 +43,37 @@ Encrypt with KMS
 			}
 
 			// Try and do the encryption
-			if err = processKmsEncrypt(&kmsEncryptConfig{
+			if err = processKmsEncrypt(&encryptConfig{
 				In:        os.Stdin,
 				Out:       os.Stdout,
-				KmsKey:    kmsKey,
+				Key:       kmsKey,
 				AwsRegion: awsRegion,
 				WrapLines: wrapLines,
+			}); err != nil {
+				panic(err)
+			}
+
+			return
+		}
+
+		// Secrets Manager
+		var smKey string
+		if smKey, _ = cmd.Flags().GetString("sm-key-id"); smKey != "" {
+			var (
+				awsRegion string
+				err       error
+			)
+
+			if awsRegion, err = cmd.Flags().GetString("aws-region"); err != nil {
+				panic(err)
+			}
+
+			var smSecretKey, _ = cmd.Flags().GetString("sm-secret-key")
+			if err = processSMEncrypt(&encryptConfig{
+				Out:       os.Stdout,
+				Key:       smKey,
+				SecretKey: smSecretKey,
+				AwsRegion: awsRegion,
 			}); err != nil {
 				panic(err)
 			}
@@ -69,51 +90,17 @@ func init() {
 
 	// Setup Flags(this command only) and Persistent Flags (this command and sub commands)
 	encryptCmd.Flags().String("kms-key-id", os.Getenv("KMS_KEY_ID"), "Provides the KMS Key ID")
+	encryptCmd.Flags().String("sm-key-id", "", "Provides the Secrets Manager key to use")
+	encryptCmd.Flags().String("sm-secret-key", "", "Provides the Key for Key/Value pairs in Secrets Manager")
 	encryptCmd.Flags().String("aws-region", getFirstEnv("AWS_REGION", "AWS_DEFAULT_REGION"), "Provides the AWS region to use for KMS")
 	encryptCmd.Flags().BoolP("wrap", "w", false, "Wrap long lines at 64 characters")
 }
 
-type kmsEncryptConfig struct {
+type encryptConfig struct {
 	In        io.Reader
 	Out       io.Writer
-	KmsKey    string
+	Key       string
+	SecretKey string // Secrets Manager specific
 	AwsRegion string
 	WrapLines bool
-}
-
-const maxLineLength = 64
-
-func processKmsEncrypt(cfg *kmsEncryptConfig) error {
-	var input []byte
-	var err error
-
-	if input, err = ioutil.ReadAll(cfg.In); err != nil {
-		return fmt.Errorf("unable to read input: %v", err)
-	}
-
-	if cfg.AwsRegion == "" {
-		return fmt.Errorf("an aws region must be provided for KMS encryption")
-	}
-
-	var strategy *cryptography.KmsCryptoStrategy
-	if strategy, err = cryptography.NewKmsCryptoStrategy(cfg.AwsRegion); err != nil {
-		return fmt.Errorf("unable to create kms crypto strategy: %v", err)
-	}
-
-	var envelope string
-	if envelope, err = strategy.Encrypt(input, cfg.KmsKey); err != nil {
-		return fmt.Errorf("error encountered attempting KMS encryption: %v", err)
-	}
-
-	if cfg.WrapLines {
-		for i := 0; i < len(envelope); i += maxLineLength {
-			cfg.Out.Write([]byte(envelope[i:min(i+maxLineLength, len(envelope))]))
-			cfg.Out.Write([]byte("\n"))
-		}
-	} else {
-		cfg.Out.Write([]byte(envelope))
-		cfg.Out.Write([]byte("\n"))
-	}
-
-	return nil
 }
