@@ -61,8 +61,8 @@ Details on how to configure your AWS credentials [can be found here]("github.com
 ## Encryption
 | Param | Description |
 | ----- | ----------- |
-| `--sm-key-id` | The ARN or name of the secret |
-| `--sm-secret-key` | The key in the secret JSON for JSON based secrets |
+| `--sm-key-id` | **REQUIRED** The ARN or name of the secret |
+| `--sm-secret-key` | _Optional_ The key in the secret JSON for JSON based secrets |
 
 Secret String Example:
 ```bash
