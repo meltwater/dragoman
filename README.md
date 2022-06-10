@@ -38,7 +38,7 @@ $ echo "ENC[KMS,...]" | dragoman decrypt
 # Decrypt an entire file
 $ cat my_encrypted.file | dragoman decrypt > my_decrypted.file
 # OR
-$ dragoman decrypt -f my_encrypted.file > my_decrypted.file
+$ dragoman decrypt -i my_encrypted.file > my_decrypted.file
 ```
 ### Notes on Encryption
 - Encrypt reads the string to encrypt from std:in. This means you can encrypt entire files like this: `$ cat myfile.txt | dragoman ...`
