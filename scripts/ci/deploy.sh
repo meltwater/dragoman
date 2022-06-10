@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Have git use ssh
+git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+
 # Install svu for version comparison
 go install github.com/caarlos0/svu@v1.9.0
 
@@ -18,7 +21,7 @@ then
 
   # Do the release
   go install github.com/goreleaser/goreleaser@v1.4.1
-  VERSION=$NEXT goreleaser --rm-dist
+  goreleaser --rm-dist
 else
   echo "No new version detected. Skipping release."
 fi

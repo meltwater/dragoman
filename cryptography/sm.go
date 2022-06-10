@@ -12,6 +12,10 @@ import (
 	sm "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
+const (
+	CRYPTO_KEY_SM string = "SECMAN"
+)
+
 type smEnvelopeEncryptionPayload struct {
 	SecretID  []byte // Secret ARN or Name
 	SecretKey []byte // Key for Secret Key/Value pairs
@@ -42,6 +46,10 @@ func NewSecretsManagerCryptoStrategy(region string) (*SecretsManagerCryptoStrate
 	return &SecretsManagerCryptoStrategy{
 		client: sm.NewFromConfig(cfg),
 	}, nil
+}
+
+func (cs SecretsManagerCryptoStrategy) Key() string {
+	return CRYPTO_KEY_SM
 }
 
 // Encrypt will generate the wrapped encoded string

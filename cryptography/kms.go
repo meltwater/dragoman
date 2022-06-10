@@ -14,8 +14,9 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
-var (
-	KMS_DATA_KEY_LENGTH int32 = 32
+const (
+	KMS_DATA_KEY_LENGTH int32  = 32
+	CRYPTO_KEY_KMS      string = "KMS"
 )
 
 type kmsEnvelopeEncryptionPayload struct {
@@ -55,6 +56,10 @@ func NewKmsCryptoStrategy(region string) (*KmsCryptoStrategy, error) {
 	}, nil
 }
 
+func (cs KmsCryptoStrategy) Key() string {
+	return CRYPTO_KEY_KMS
+}
+
 func (cs *KmsCryptoStrategy) GenerateDataKey(keyId string) (*[32]byte, []byte, error) {
 	// Use KMS to generate a data key
 	var resp *kms.GenerateDataKeyOutput
@@ -62,7 +67,7 @@ func (cs *KmsCryptoStrategy) GenerateDataKey(keyId string) (*[32]byte, []byte, e
 
 	if resp, err = cs.client.GenerateDataKey(context.TODO(), &kms.GenerateDataKeyInput{
 		KeyId:         &keyId,
-		NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+		NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 	}); err != nil {
 		return nil, nil, err
 	}

@@ -1,7 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -41,11 +37,14 @@ The decryption strategy will be automatically detected`,
 		}
 
 		// Be able to handle different encryption types
-		strategy := cryptography.NewWildcardDecryptionStrategy()
-		kmsStrategy, _ := cryptography.NewKmsCryptoStrategy("")
-		smStrategy, _ := cryptography.NewSecretsManagerCryptoStrategy("")
-		strategy.Add("KMS", kmsStrategy)
-		strategy.Add("SECMAN", smStrategy)
+		strategy, err := cryptography.NewWildcardDecryptionStrategy([]cryptography.StrategyBuilder{
+			func() (cryptography.Decryptor, error) { return cryptography.NewKmsCryptoStrategy("") },
+			func() (cryptography.Decryptor, error) { return cryptography.NewSecretsManagerCryptoStrategy("") },
+		})
+
+		if err != nil {
+			panic(fmt.Errorf("unable to setup the decryption strategies: %v", err))
+		}
 
 		if err := processDecrypt(input, output, strategy); err != nil {
 			panic(fmt.Errorf("unable to decrypt the provided text: %v", err))
@@ -70,7 +69,7 @@ func processDecrypt(in io.Reader, out io.Writer, strategy cryptography.Decryptor
 		return fmt.Errorf("unable to read input: %v", err)
 	}
 
-	if result, err = decryptEnvelopes(string(payload), strategy); err != nil {
+	if result, err = cryptography.DecryptEnvelopes(string(payload), strategy); err != nil {
 		return fmt.Errorf("unable to decrypt input: %v", err)
 	}
 

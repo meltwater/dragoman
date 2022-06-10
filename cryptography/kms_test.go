@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -54,7 +55,7 @@ func TestKmsGenerateDataKey(t *testing.T) {
 		// Mock out the kms call
 		gdkInput := &kms.GenerateDataKeyInput{
 			KeyId:         &keyId,
-			NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+			NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 		}
 
 		gdkOutput := &kms.GenerateDataKeyOutput{
@@ -83,7 +84,7 @@ func TestKmsGenerateDataKey(t *testing.T) {
 		// Mock out the kms call
 		gdkInput := &kms.GenerateDataKeyInput{
 			KeyId:         &keyId,
-			NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+			NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 		}
 
 		mockKms.On("GenerateDataKey", context.TODO(), gdkInput, mock.Anything).Return(&kms.GenerateDataKeyOutput{}, fmt.Errorf("An Error"))
@@ -101,7 +102,7 @@ func TestKmsGenerateDataKey(t *testing.T) {
 		// Mock out the kms call
 		gdkInput := &kms.GenerateDataKeyInput{
 			KeyId:         &keyId,
-			NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+			NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 		}
 
 		gdkOutput := &kms.GenerateDataKeyOutput{
@@ -126,7 +127,7 @@ func TestKmsEncryption(t *testing.T) {
 		// Mock out the kms call
 		gdkInput := &kms.GenerateDataKeyInput{
 			KeyId:         &keyId,
-			NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+			NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 		}
 
 		gdkOutput := &kms.GenerateDataKeyOutput{
@@ -154,7 +155,7 @@ func TestKmsEncryption(t *testing.T) {
 		// Mock out the kms call
 		gdkInput := &kms.GenerateDataKeyInput{
 			KeyId:         &keyId,
-			NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+			NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 		}
 
 		mockKms.On("GenerateDataKey", context.TODO(), gdkInput, mock.Anything).Return(&kms.GenerateDataKeyOutput{}, fmt.Errorf("An Error"))
@@ -173,7 +174,7 @@ func generateMockEncryptedString(key string, secret string, output *string) {
 	// Mock out the kms call
 	gdkInput := &kms.GenerateDataKeyInput{
 		KeyId:         &key,
-		NumberOfBytes: &KMS_DATA_KEY_LENGTH,
+		NumberOfBytes: aws.Int32(KMS_DATA_KEY_LENGTH),
 	}
 
 	gdkOutput := &kms.GenerateDataKeyOutput{
